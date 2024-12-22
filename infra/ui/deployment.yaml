@@ -4,17 +4,17 @@ metadata:
   name: k8s-demo-ui-deployment
   namespace: k8s-demo-app
 spec:
-  replicas: 1
+  replicas: 3
   selector:
     matchLabels:
       app: k8s-demo-ui
   template:
     metadata:
-      matchLabels:
+      labels:
         app: k8s-demo-ui
   spec:
     containers:
       - name: k8s-demo-ui
         image: swiftlee/k8s-keycloak-demo-ui:1.0.0
         ports:
-        - containerPort: 3000
+          - containerPort: 3000
