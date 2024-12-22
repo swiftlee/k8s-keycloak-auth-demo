@@ -12,9 +12,9 @@ spec:
     metadata:
       labels:
         app: k8s-demo-ui
-  spec:
-    containers:
-      - name: k8s-demo-ui
-        image: swiftlee/k8s-keycloak-demo-ui:1.0.0
-        ports:
-          - containerPort: 3000
+    spec:
+      containers:
+        - name: k8s-demo-ui
+          image: swiftlee/k8s-keycloak-demo-ui:1.0.0
+          ports:
+            - containerPort: 3000
