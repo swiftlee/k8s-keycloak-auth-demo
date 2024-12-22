@@ -21,4 +21,3 @@ spec:
   postBuild:
     substitute:
       ENVIRONMENT: production
-  validation: client
