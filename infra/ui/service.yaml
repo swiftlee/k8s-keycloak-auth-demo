@@ -3,10 +3,12 @@ kind: Service
 metadata:
   name: k8s-demo-ui-service
   namespace: k8s-demo-app
+  labels:
+    app: k8s-demo-ui
 spec:
   selector:
     app: k8s-demo-ui
   ports:
-  - port: 80
+  - port: 3000
+    protocol: TCP
     targetPort: 3000
-  type: ClusterIP
