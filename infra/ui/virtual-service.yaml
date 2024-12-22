@@ -5,20 +5,20 @@ metadata:
   namespace: k8s-demo-app
 spec:
   hosts:
-  - k8s-demo-ui-service.k8s-demo-app.svc.cluster.local
+    - k8s-demo.local
   gateways:
-  - main # expose the ui external to the cluster
+    - istio-ingress/main # expose the ui external to the cluster
   http:
-  - match:
-    - uri:
-      prefix: "/"
-    route:
-    - destination:
-      host: k8s-demo-ui-service
-      port:
-        number: 3000
-    timeout: 15s
-    retries:
-      attempts: 3
-      perTryTimeout: 2s
-      retryOn: connect-failure,refused-stream,unavailable,cancelled,retriable-status-codes
+    - match:
+        - uri:
+            prefix: "/"
+      route:
+        - destination:
+            host: k8s-demo-ui-service
+            port:
+              number: 3000
+      timeout: 15s
+      retries:
+        attempts: 3
+        perTryTimeout: 2s
+        retryOn: connect-failure,refused-stream,unavailable,cancelled,retriable-status-codes
