@@ -1,0 +1,50 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: istio-ingress
+
+---
+
+apiVersion: networking.istio.io/v1alpha3
+kind: Gateway
+metadata:
+  name: main
+  namespace: istio-ingress
+spec:
+  selector:
+    istio: ingressgateway  # Use the default Istio ingress gateway
+  servers:
+  - port:
+      number: 80
+      name: http
+      protocol: HTTP
+    hosts:
+    - "*"  # Accept requests from any host
+    # tls:
+      # httpsRedirect: true  # Redirect HTTP to HTTPS
+  # - port:
+      # number: 443
+      # name: https
+      # protocol: HTTPS
+    # hosts:
+    # - "*"  # Accept requests from any host
+    # tls:
+      # mode: SIMPLE
+      # credentialName: tls-secret  # Reference to your TLS secret
+
+---
+# Allow any namespace to access this gateway
+apiVersion: security.istio.io/v1beta1
+kind: AuthorizationPolicy
+metadata:
+  name: gateway-policy
+  namespace: istio-ingress
+spec:
+  selector:
+    matchLabels:
+      istio: ingressgateway
+  action: ALLOW
+  rules:
+  - from:
+    - source:
+        namespaces: ["*"]  # Allow from any namespace
