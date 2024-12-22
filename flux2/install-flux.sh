@@ -1,0 +1,1 @@
+helm upgrade --install flux . -n flux --create-namespace

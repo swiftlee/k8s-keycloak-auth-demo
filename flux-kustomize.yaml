@@ -1,23 +1,39 @@
+apiVersion: source.toolkit.fluxcd.io/v1
+kind: GitRepository
+metadata:
+  name: keycloak-auth-demo
+  namespace: flux
+spec:
+  interval: 1m
+  url: https://github.com/swiftlee/k8s-keycloak-auth-demo.git
+  ref:
+    branch: main
+  secretRef:
+    name: git-credentials
+  timeout: 60s
+
+---
+
 apiVersion: kustomize.toolkit.fluxcd.io/v1
 kind: Kustomization
 metadata:
   name: ui-components
-  namespace: flux-system
+  namespace: flux
 spec:
   interval: 10m
   path: ./infra/ui
   prune: true
   sourceRef:
     kind: GitRepository
-    name: flux-system
+    name: keycloak-auth-demo
   timeout: 2m
   force: false
   wait: true
   healthChecks:
     - apiVersion: apps/v1
       kind: Deployment
-      name: ui-deployment
-      namespace: default
+      name: k8s-demo-ui-deployment
+      namespace: k8s-demo-app
   postBuild:
     substitute:
       ENVIRONMENT: production
