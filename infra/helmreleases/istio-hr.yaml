@@ -30,8 +30,6 @@ metadata:
   namespace: flux
 spec:
   interval: 5m
-  dependsOn:
-    - name: istio-base
   chart:
     spec:
       chart: ./istio/istiod
@@ -40,8 +38,6 @@ spec:
         name: keycloak-auth-demo
         namespace: flux
       interval: 1m
-  dependsOn:
-    - name: istio-base
   install:
     createNamespace: true
     remediation:
