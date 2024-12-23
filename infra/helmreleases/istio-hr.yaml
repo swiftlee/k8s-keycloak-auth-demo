@@ -5,6 +5,7 @@ metadata:
   namespace: flux
 spec:
   interval: 5m
+  targetNamespace: istio-system
   chart:
     spec:
       chart: ./istio/base
@@ -30,6 +31,7 @@ metadata:
   namespace: flux
 spec:
   interval: 5m
+  targetNamespace: istio-system
   chart:
     spec:
       chart: ./istio/istiod
