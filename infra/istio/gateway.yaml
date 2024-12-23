@@ -13,17 +13,17 @@ spec:
       protocol: HTTP
     hosts:
     - "*"  # Accept requests from any host
-    # tls:
-      # httpsRedirect: true  # Redirect HTTP to HTTPS
-  # - port:
-      # number: 443
-      # name: https
-      # protocol: HTTPS
-    # hosts:
-    # - "*"  # Accept requests from any host
-    # tls:
-      # mode: SIMPLE
-      # credentialName: tls-secret  # Reference to your TLS secret
+    tls:
+      httpsRedirect: true  # Redirect HTTP to HTTPS
+  - port:
+      number: 443
+      name: https
+      protocol: HTTPS
+    hosts:
+    - "*"  # Accept requests from any host
+    tls:
+      mode: SIMPLE
+      credentialName: tls-secret  # Reference to your TLS secret
 
 ---
 # Allow any namespace to access this gateway
