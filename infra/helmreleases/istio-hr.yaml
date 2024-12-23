@@ -30,6 +30,8 @@ metadata:
   namespace: flux
 spec:
   interval: 5m
+  dependsOn:
+    - name: istio-base
   chart:
     spec:
       chart: ./istio/istiod
