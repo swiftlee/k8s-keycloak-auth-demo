@@ -1,0 +1,49 @@
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: istio-base
+  namespace: flux
+spec:
+  interval: 5m
+  chart:
+    spec:
+      chart: ./istio/base
+      sourceRef:
+        kind: GitRepository
+        name: keycloak-auth-demo
+        namespace: flux
+      interval: 1m
+  install:
+    createNamespace: true
+    remediation:
+      retries: 3
+  upgrade:
+    remediation:
+      retries: 3
+
+---
+
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: istiod
+  namespace: flux
+spec:
+  interval: 5m
+  chart:
+    spec:
+      chart: ./istio/istiod
+      sourceRef:
+        kind: GitRepository
+        name: keycloak-auth-demo
+        namespace: flux
+      interval: 1m
+  dependsOn:
+    - name: istio-base
+  install:
+    createNamespace: true
+    remediation:
+      retries: 3
+  upgrade:
+    remediation:
+      retries: 3

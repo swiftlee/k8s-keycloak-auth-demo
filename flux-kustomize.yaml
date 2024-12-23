@@ -17,10 +17,29 @@ spec:
 apiVersion: kustomize.toolkit.fluxcd.io/v1
 kind: Kustomization
 metadata:
+  name: helmrelease-components
+  namespace: flux
+spec:
+  interval: 10m
+  path: ./infra/helmreleases
+  prune: true
+  sourceRef:
+    kind: GitRepository
+    name: keycloak-auth-demo
+  timeout: 2m
+  force: false
+
+---
+
+apiVersion: kustomize.toolkit.fluxcd.io/v1
+kind: Kustomization
+metadata:
   name: ui-components
   namespace: flux
 spec:
   interval: 10m
+  dependsOn:
+    - name: helmrelease-components
   path: ./infra/ui
   prune: true
   sourceRef:
@@ -37,3 +56,28 @@ spec:
   postBuild:
     substitute:
       ENVIRONMENT: production
+
+---
+
+apiVersion: kustomize.toolkit.fluxcd.io/v1
+kind: Kustomization
+metadata:
+  name: istio-components
+  namespace: flux
+spec:
+  interval: 10m
+  dependsOn:
+    - name: helmrelease-components
+  path: ./infra/istio
+  prune: true
+  sourceRef:
+    kind: GitRepository
+    name: keycloak-auth-demo
+  timeout: 2m
+  force: false
+  wait: true
+  healthChecks:
+    - apiVersion: apps/v1
+      kind: Deployment
+      name: istiod
+      namespace: istio-system
