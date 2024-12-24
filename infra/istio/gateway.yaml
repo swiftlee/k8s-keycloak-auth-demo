@@ -25,14 +25,27 @@ spec:
             value: "0"
       containers:
         - name: istio-proxy
-          image: auto # The image will automatically update each time the pod starts.
-          # Drop all privileges, allowing to run as non-root
+          image: auto
           securityContext:
             capabilities:
               drop:
                 - ALL
             runAsUser: 1337
             runAsGroup: 1337
+          volumeMounts:
+            - name: ingressgateway-certs
+              mountPath: /etc/istio/ingressgateway-certs
+              readOnly: true
+            - name: ca-cert
+              mountPath: /etc/istio/ca-cert
+              readOnly: true
+      volumes:
+        - name: ingressgateway-certs
+          secret:
+            secretName: istio-ingressgateway-certs
+        - name: ca-cert
+          secret:
+            secretName: ca-cert
 ---
 apiVersion: v1
 kind: Service
@@ -42,7 +55,7 @@ metadata:
 spec:
   type: LoadBalancer
   selector:
-    app: istio-ingressgateway
+    app: ingressgateway
   ports:
     - port: 80
       targetPort: 8080
