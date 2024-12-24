@@ -7,7 +7,7 @@ spec:
   hosts:
     - k8s-demo.local
   gateways:
-    - istio-ingress/main # expose the ui external to the cluster
+    - istio-system/main # expose the ui external to the cluster
   http:
     - match:
         - uri:
