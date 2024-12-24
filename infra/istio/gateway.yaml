@@ -78,4 +78,4 @@ spec:
         mode: SIMPLE
         serverCertificate: /etc/istio/ingressgateway-certs/tls.crt
         privateKey: /etc/istio/ingressgateway-certs/tls.key
-        caCertificate: /etc/istio/ca-cert/ca.crt
+        caCertificates: /etc/istio/ca-cert/ca.crt
