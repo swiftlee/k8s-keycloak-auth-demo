@@ -5,45 +5,63 @@ metadata:
   namespace: istio-ingress
 spec:
   selector:
-    istio: ingressgateway  # Use the default Istio ingress gateway
+    istio: ingressgateway # Use the default Istio ingress gateway
   servers:
-  - port:
-      number: 8080
-      name: http
-      protocol: HTTP
-    hosts:
-    - "*"  # Accept requests from any host
-    tls:
-      httpsRedirect: true  # Redirect HTTP to HTTPS
-  - port:
-      number: 8443
-      name: https
-      protocol: HTTPS
-    hosts:
-    - "*"  # Accept requests from any host
-    tls:
-      mode: SIMPLE
-      credentialName: tls-secret  # Reference to your TLS secret
+    - port:
+        number: 80
+        name: http
+        protocol: HTTP
+      hosts:
+        - "*" # Accept requests from any host
+      tls:
+        httpsRedirect: true # Redirect HTTP to HTTPS
+    - port:
+        number: 443
+        name: https
+        protocol: HTTPS
+      hosts:
+        - "*" # Accept requests from any host
+      tls:
+        mode: SIMPLE
+        credentialName: tls-secret # Reference to your TLS secret
 
 ---
-# Allow any namespace to access this gateway
-apiVersion: security.istio.io/v1beta1
-kind: AuthorizationPolicy
+apiVersion: apps/v1
+kind: Deployment
 metadata:
-  name: gateway-policy
+  name: istio-ingressgateway
   namespace: istio-ingress
 spec:
   selector:
     matchLabels:
       istio: ingressgateway
-  action: ALLOW
-  rules:
-  - from:
-    - source:
-        namespaces: ["*"]  # Allow from any namespace
-
+  template:
+    metadata:
+      annotations:
+        # Select the gateway injection template (rather than the default sidecar template)
+        inject.istio.io/templates: gateway
+      labels:
+        # Set a unique label for the gateway. This is required to ensure Gateways can select this workload
+        istio: ingressgateway
+        # Enable gateway injection. If connecting to a revisioned control plane, replace with "istio.io/rev: revision-name"
+        sidecar.istio.io/inject: "true"
+    spec:
+      # Allow binding to all ports (such as 80 and 443)
+      securityContext:
+        sysctls:
+          - name: net.ipv4.ip_unprivileged_port_start
+            value: "0"
+      containers:
+        - name: istio-proxy
+          image: auto # The image will automatically update each time the pod starts.
+          # Drop all privileges, allowing to run as non-root
+          securityContext:
+            capabilities:
+              drop:
+                - ALL
+            runAsUser: 1337
+            runAsGroup: 1337
 ---
-
 apiVersion: v1
 kind: Service
 metadata:
@@ -54,11 +72,31 @@ spec:
   selector:
     istio: ingressgateway
   ports:
-  - port: 80
-    targetPort: 8080
-    protocol: TCP
-    name: http2
-  - port: 443
-    targetPort: 8443
-    protocol: TCP
-    name: https
+    - port: 80
+      name: http
+    - port: 443
+      name: https
+---
+# Set up roles to allow reading credentials for TLS
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  name: istio-ingressgateway-sds
+  namespace: istio-ingress
+rules:
+- apiGroups: [""]
+  resources: ["secrets"]
+  verbs: ["get", "watch", "list"]
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: istio-ingressgateway-sds
+  namespace: istio-ingress
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: Role
+  name: istio-ingressgateway-sds
+subjects:
+- kind: ServiceAccount
+  name: default
