@@ -1,7 +1,7 @@
 apiVersion: networking.istio.io/v1
 kind: VirtualService
 metadata:
-  name: reviews-route
+  name: ui-virtual-service
   namespace: k8s-demo-app
 spec:
   hosts:
