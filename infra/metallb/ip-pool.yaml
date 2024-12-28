@@ -5,10 +5,13 @@ metadata:
   namespace: metallb-system
 spec:
   addresses:
-  - 172.25.34.200-172.25.34.250  # Adjust this range according to your network
+  - 172.25.32.2-172.25.47.254  # Changed to match your network subnet
 ---
 apiVersion: metallb.io/v1beta1
 kind: L2Advertisement
 metadata:
   name: l2-advertisement
   namespace: metallb-system
+spec:
+  ipAddressPools:
+  - first-pool
