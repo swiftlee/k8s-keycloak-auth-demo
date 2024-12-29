@@ -31,26 +31,26 @@ sql:$CERT_DIR -A -t "C,," -n "Istio Ingress CA" -i certs/ca.crt`
 # Routing through the ingress
 ```mermaid
 flowchart TD
-    Browser["Browser\nk8s-demo.local"]
+    Browser["Browser<br/>k8s-demo.local"]
     
     subgraph Kind["Kind Cluster"]
         subgraph NodePorts["Node Ports"]
-            Port80[":80\nNodePort 30080"]
-            Port443[":443\nNodePort 30443"]
+            Port80[":80<br/>NodePort 30080"]
+            Port443[":443<br/>NodePort 30443"]
         end
         
         subgraph IstioSystem["istio-system namespace"]
-            Gateway["Istio Gateway\n(main)"]
-            IGService["Istio Ingress Gateway Service\n(NodePort)"]
+            Gateway["Istio Gateway<br/>(main)"]
+            IGService["Istio Ingress Gateway Service<br/>(NodePort)"]
             IGPod["Istio Ingress Gateway Pod"]
         end
         
         subgraph K8sDemoApp["k8s-demo-app namespace"]
-            VS["Virtual Service\n(ui-virtual-service)"]
-            UIService["UI Service\n(k8s-demo-ui-service)\nport: 3000"]
-            UIPod1["UI Pod 1\nport: 3000"]
-            UIPod2["UI Pod 2\nport: 3000"]
-            UIPod3["UI Pod 3\nport: 3000"]
+            VS["Virtual Service<br/>(ui-virtual-service)"]
+            UIService["UI Service<br/>(k8s-demo-ui-service)<br/>port: 3000"]
+            UIPod1["UI Pod 1<br/>port: 3000"]
+            UIPod2["UI Pod 2<br/>port: 3000"]
+            UIPod3["UI Pod 3<br/>port: 3000"]
         end
     end
     
