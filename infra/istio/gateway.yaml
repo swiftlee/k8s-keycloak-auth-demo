@@ -53,15 +53,17 @@ metadata:
   name: istio-ingressgateway
   namespace: istio-system
 spec:
-  type: LoadBalancer
+  type: NodePort
   selector:
     istio: ingressgateway
   ports:
     - port: 80
       targetPort: 8080
+      nodePort: 30080 # This will be exposed on the Kind node
       name: http
     - port: 443
       targetPort: 8443
+      nodePort: 30443
       name: https
 ---
 apiVersion: networking.istio.io/v1alpha3
