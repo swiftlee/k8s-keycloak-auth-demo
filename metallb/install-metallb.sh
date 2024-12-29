@@ -1,1 +1,0 @@
-helm upgrade --install -n metallb-system metallb . --create-namespace
