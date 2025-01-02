@@ -1,0 +1,30 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: k8s-demo-api-deployment
+  namespace: k8s-demo-app
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: k8s-demo-api
+  template:
+    metadata:
+      labels:
+        app: k8s-demo-api
+      annotations:
+        sidecar.istio.io/inject: "true"
+    spec:
+      containers:
+        - name: k8s-demo-api
+          image: k8s-demo-api:1.0.0
+          ports:
+            - containerPort: 8000
+          volumeMounts:
+            - name: certs
+              mountPath: "/app/certs"
+              readOnly: true
+      volumes:
+        - name: certs
+          secret:
+            secretName: api-certs

@@ -1,30 +1,20 @@
 apiVersion: networking.istio.io/v1
 kind: VirtualService
 metadata:
-  name: ui-virtual-service
-  namespace: k8s-demo-app
+  name: keycloak-virtual-service
+  namespace: keycloak
 spec:
   hosts:
-    - k8s-demo.local
+    - keycloak.local
   gateways:
     - istio-system/main # expose the ui external to the cluster
   http:
-    - match:
-      - uri:
-        prefix: "/api/"
-      - uri:
-        prefix: "/saml/"
-      route:
-        - destination:
-            host: k8s-demo-api-service
-            port:
-              number: 8000
     - match:
         - uri:
             prefix: "/"
       route:
         - destination:
-            host: k8s-demo-ui-service
+            host: keycloak
             port:
               number: 3000
       timeout: 15s
