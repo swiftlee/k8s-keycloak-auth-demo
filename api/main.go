@@ -28,64 +28,53 @@ type UserData struct {
 var samlMiddleware *samlsp.Middleware
 
 func main() {
-	// Load X.509 certificate and private key
-	keyPair, err := tls.LoadX509KeyPair("cert.pem", "key.pem")
-	if err != nil {
-		panic(err)
-	}
-	keyPair.Leaf, err = x509.ParseCertificate(keyPair.Certificate[0])
-	if err != nil {
-		panic(err)
-	}
+    // Load X.509 certificate and private key from mounted secrets
+    keyPair, err := tls.LoadX509KeyPair("/app/certs/tls.crt", "/app/certs/tls.key")
+    if err != nil {
+        panic(err)
+    }
+    keyPair.Leaf, err = x509.ParseCertificate(keyPair.Certificate[0])
+    if err != nil {
+        panic(err)
+    }
 
-	// Read IdP metadata
-	idpMetadata, err := os.ReadFile("idp-metadata.xml") // TODO: fetch this data and cache instead
-	if err != nil {
-		panic(err)
-	}
+    // Read IdP metadata from ConfigMap
+    idpMetadata, err := os.ReadFile("/app/config/idp-metadata.xml")
+    if err != nil {
+        panic(err)
+    }
 
-	idpMetadataStruct := &saml.EntityDescriptor{}
-	err = xml.Unmarshal(idpMetadata, idpMetadataStruct)
-	if err != nil {
-		panic(err)
-	}
+    idpMetadataStruct := &saml.EntityDescriptor{}
+    err = xml.Unmarshal(idpMetadata, idpMetadataStruct)
+    if err != nil {
+        panic(err)
+    }
 
-	rootURL := "http://localhost:3000"
+    rootURL := "https://k8s-demo.local"
 
-	opts := samlsp.Options{
-		URL:               rootURL,
-		Key:               keyPair.PrivateKey.(*rsa.PrivateKey),
-		Certificate:       keyPair.Leaf,
-		IDPMetadata:       idpMetadataStruct,
-		AllowIDPInitiated: true,
-	}
+    opts := samlsp.Options{
+        URL:               rootURL,
+        Key:              keyPair.PrivateKey.(*rsa.PrivateKey),
+        Certificate:      keyPair.Leaf,
+        IDPMetadata:      idpMetadataStruct,
+        AllowIDPInitiated: true,
+    }
 
-	samlMiddleware, err = samlsp.New(opts)
-	if err != nil {
-		panic(err)
-	}
+    // ... rest of your code remains the same ...
 
-	r := mux.NewRouter()
+    corsHandler := handlers.CORS(
+        handlers.AllowedOrigins([]string{"https://k8s-demo.local"}),
+        handlers.AllowedMethods([]string{"GET", "POST", "OPTIONS"}),
+        handlers.AllowedHeaders([]string{"Content-Type"}),
+        handlers.AllowCredentials(),
+    )
 
-	// SAML routes
-	r.HandleFunc("/saml/metadata", samlMiddleware.ServeMetadata)
-	r.HandleFunc("/saml/acs", samlMiddleware.ServeACS)
-	r.HandleFunc("/saml/sso", samlMiddleware.ServeSSO)
+    server := &http.Server{
+        Addr:    ":8000",
+        Handler: corsHandler(r),
+    }
 
-	// Protected API routes
-	api := r.PathPrefix("/api").Subrouter()
-	api.Use(samlMiddleware.RequireAccount)
-	api.HandleFunc("/user", getUserInfo).Methods("GET")
-	api.HandleFunc("/logout", handleLogout).Methods("POST")
-
-	corsHandler := handlers.CORS(
-		handlers.AllowedOrigins([]string{"http://localhost:3000"}),
-		handlers.AllowedMethods([]string{"GET", "POST", "OPTIONS"}),
-		handlers.AllowedHeaders([]string{"Content-Type"}),
-		handlers.AllowCredentials(),
-	)
-
-	http.ListenAndServe(":8000", corsHandler(r))
+    server.ListenAndServe()
 }
 
 func getUserInfo(w http.ResponseWriter, r *http.Request) {

@@ -81,3 +81,23 @@ spec:
       kind: Deployment
       name: istiod
       namespace: istio-system
+
+---
+
+apiVersion: kustomize.toolkit.fluxcd.io/v1
+kind: Kustomization
+metadata:
+  name: keycloak-components
+  namespace: flux
+spec:
+  interval: 10m
+  dependsOn:
+    - name: istio-components
+  path: ./infra/keycloak
+  prune: true
+  sourceRef:
+    kind: GitRepository
+    name: keycloak-auth-demo
+  timeout: 2m
+  force: false
+  wait: true
