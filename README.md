@@ -4,7 +4,9 @@
 
 - Install Flux using the script found in `./flux2`.
 
-- Create a `secrets.yaml` somewhere in your project. Ensure that it is `.gitignore`'d since this will contain your GitHub/GitLab PAT.
+- Create a `secrets.yaml` somewhere in your project. Ensure that it is `.gitignore`'d since this will contain your GitHub/GitLab PAT. You will also need to create a secret for the Keycloak admin password. You will need to initialize the namespace before applying it.
+
+> Note: You can run a command like this to generate the Keycloak password YAML: `kubectl create secret generic -n keycloak admin-password --from-literal='password=<password_here>' --dry-run=client -o yaml`
 
 ```yaml
 apiVersion: v1
@@ -16,6 +18,16 @@ type: Opaque
 stringData:
   username: <YOUR_GITHUB_USERNAME>
   password: <YOUR_GITHUB_PAT>
+
+---
+
+apiVersion: v1
+kind: Secret
+metadata:
+  name: admin-password
+  namespace: keycloak
+data:
+  password: <BASE64_ENCODED_PASSWORD>
 ```
 
 You can verify that flux has connected to your repository by running `kubectl get gitrepo -n flux` and viewing the status.
