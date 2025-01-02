@@ -25,8 +25,7 @@ You can verify that flux has connected to your repository by running `kubectl ge
 - Verify that the istio ingress gateway is up by using `kubectl get gateway -n istio-system`. Check that the UI is available by running: `curl -L -H "Host: k8s-demo.local" http://localhost -v`, you will need to trust the `certs/ca.crt` on your machine to connect via curl.
 
 > In Ubuntu: `sudo cp certs/ca.crt /usr/local/share/ca-certificates/ && sudo update-ca-certificates`<br/><br/>
-If working in WSL2 or using `snap`, you can trust the CA in Firefox by executing the following command: `CERT_DIR=/home/<YOUR_USER>/snap/firefox/common/.mozilla/firefox/<ID>.default/; certutil -d 
-sql:$CERT_DIR -A -t "C,," -n "Istio Ingress CA" -i certs/ca.crt`
+If working in WSL2 or using `snap`, you can trust the CA in Firefox by executing the following command: `CERT_DIR=/home/<YOUR_USER>/snap/firefox/common/.mozilla/firefox/<ID>.default/; certutil -d sql:$CERT_DIR -A -t "C,," -n "Istio Ingress CA" -i certs/ca.crt`
 
 # Routing through the ingress
 ```mermaid
