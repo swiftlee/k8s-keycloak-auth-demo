@@ -14,9 +14,9 @@ spec:
         name: keycloak-auth-demo
         namespace: flux
       interval: 1m
-  valuesFiles:
-    - ./keycloak/values.yaml
-    - ./keycloak/overridden-values.yaml
+      valuesFiles:
+        - ./keycloak/values.yaml
+        - ./keycloak/overridden-values.yaml
   install:
     createNamespace: true
     remediation:
