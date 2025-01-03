@@ -1,6 +1,9 @@
 proxyHeaders: "xforwarded,forwarded" # This replaces the old proxy: edge
-existingSecret: "admin-password"
-passwordSecretKey: "password"
+
+auth:
+  existingSecret: "admin-password"
+  passwordSecretKey: "password"
+  adminUser: admin
 
 production: false  # Helps with more detailed errors during setup
 
