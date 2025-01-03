@@ -1,4 +1,5 @@
 proxyHeaders: "forwarded"
+proxy: "passthrough"
 
 auth:
   existingSecret: "admin-password"
@@ -6,10 +7,3 @@ auth:
   adminUser: admin
 
 production: false
-
-configuration: |-
-  hostname=keycloak.local
-  hostname-url=https://keycloak.local
-  hostname-admin-url=https://keycloak.local
-  http-enabled=true
-  proxy=passthrough
