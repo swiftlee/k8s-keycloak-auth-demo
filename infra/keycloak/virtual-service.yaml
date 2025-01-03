@@ -17,6 +17,10 @@ spec:
             host: keycloak
             port:
               number: 80
+          headers:
+            request:
+              set:
+                x-forwarded-proto: https
       timeout: 15s
       retries:
         attempts: 3
