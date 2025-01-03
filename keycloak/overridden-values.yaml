@@ -1,13 +1,12 @@
-proxyHeaders: "forwarded" # This replaces the old proxy: edge
+proxyHeaders: "xforwarded,forwarded" # This replaces the old proxy: edge
 existingSecret: "admin-password"
 passwordSecretKey: "password"
 
 production: false  # Helps with more detailed errors during setup
-hostname: 
-  strict: false  # Allow proxied access
-  strictBackchannel: false  # Allow backchannel auth through proxy
-extraEnvVars:
-  - name: KC_HOSTNAME
-    value: "keycloak.local"
-  - name: KC_HTTP_ENABLED
-    value: "true"
+
+configuration: |-
+  hostname=keycloak.local
+  hostname-url=https://keycloak.local
+  hostname-admin-url=https://keycloak.local
+  http-enabled=true
+  proxy=passthrough
