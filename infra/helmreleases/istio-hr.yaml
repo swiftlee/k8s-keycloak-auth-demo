@@ -33,9 +33,9 @@ metadata:
 spec:
   interval: 5m
   targetNamespace: istio-system
-  reconcileStrategy: Revision
   chart:
     spec:
+      reconcileStrategy: Revision
       chart: ./istio/istiod
       sourceRef:
         kind: GitRepository
