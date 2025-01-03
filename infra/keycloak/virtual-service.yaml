@@ -21,6 +21,9 @@ spec:
             request:
               set:
                 x-forwarded-proto: https
+                x-forwarded-port: "443"
+                x-forwarded-host: keycloak.local
+                forwarded: "proto=https;host=keycloak.local"
       timeout: 15s
       retries:
         attempts: 3
