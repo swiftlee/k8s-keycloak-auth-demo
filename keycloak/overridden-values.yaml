@@ -1,5 +1,4 @@
 proxyHeaders: "forwarded"
-proxy: "passthrough"
 
 auth:
   existingSecret: "admin-password"
