@@ -9,6 +9,7 @@ spec:
   chart:
     spec:
       chart: ./istio/base
+      reconcileStrategy: Revision
       sourceRef:
         kind: GitRepository
         name: keycloak-auth-demo
@@ -32,6 +33,7 @@ metadata:
 spec:
   interval: 5m
   targetNamespace: istio-system
+  reconcileStrategy: Revision
   chart:
     spec:
       chart: ./istio/istiod

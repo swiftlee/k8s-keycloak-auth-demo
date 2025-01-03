@@ -11,6 +11,7 @@ spec:
     spec:
       chart: keycloak
       interval: 10s
+      reconcileStrategy: Revision
       sourceRef:
         kind: GitRepository
         name: keycloak-auth-demo
@@ -20,3 +21,13 @@ spec:
         - keycloak/overridden-values.yaml
   install:
     createNamespace: true
+    remediation:
+      retries: 1
+  upgrade:
+    remediation:
+      remediateLastFailure: true
+      retries: 1
+  rollback:
+    timeout: 1m0s
+    cleanupOnFail: true
+    force: true
