@@ -4,23 +4,18 @@ metadata:
   name: keycloak
   namespace: flux
 spec:
-  interval: 5m
+  interval: 10s
+  releaseName: keycloak
   targetNamespace: keycloak
   chart:
     spec:
-      chart: ./keycloak
+      chart: keycloak
       sourceRef:
         kind: GitRepository
         name: keycloak-auth-demo
         namespace: flux
-      interval: 1m
       valuesFiles:
-        - ./keycloak/values.yaml
-        - ./keycloak/overridden-values.yaml
+        - keycloak/values.yaml
+        - keycloak/overridden-values.yaml
   install:
     createNamespace: true
-    remediation:
-      retries: 3
-  upgrade:
-    remediation:
-      retries: 3
