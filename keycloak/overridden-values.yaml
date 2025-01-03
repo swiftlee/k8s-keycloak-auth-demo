@@ -1,11 +1,11 @@
-proxyHeaders: "xforwarded,forwarded" # This replaces the old proxy: edge
+proxyHeaders: "forwarded"
 
 auth:
   existingSecret: "admin-password"
   passwordSecretKey: "password"
   adminUser: admin
 
-production: false  # Helps with more detailed errors during setup
+production: false
 
 configuration: |-
   hostname=keycloak.local
