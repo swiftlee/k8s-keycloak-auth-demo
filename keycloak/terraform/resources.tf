@@ -1,5 +1,4 @@
-# Configure the Keycloak provider
-# Create a dedicated realm for your application
+# Create a dedicated realm for application
 resource "keycloak_realm" "app_realm" {
   realm             = "k8s-demo"
   enabled           = true
