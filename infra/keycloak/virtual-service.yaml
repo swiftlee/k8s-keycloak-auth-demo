@@ -14,7 +14,7 @@ spec:
             prefix: "/"
       route:
         - destination:
-            host: keycloak-keycloak
+            host: keycloak
             port:
               number: 80
       timeout: 15s
