@@ -20,6 +20,9 @@ spec:
           headers:
             request:
               set:
+                # these must be set to ensure that Keycloak serves content and URLs with HTTPS
+                # TLS terminates at the Istio gateway, so we need to tell Keycloak
+                # that the traffic is 443 traffic... if we do not set this, Keycloak will not load due to mixed-content (Keycloak will generate URls and resources with http prefixes)
                 x-forwarded-proto: https
                 x-forwarded-port: "443"
                 x-forwarded-host: keycloak.local
